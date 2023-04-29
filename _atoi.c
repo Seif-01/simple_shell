@@ -1,36 +1,77 @@
+#include "shell.h"
+
 /**
- * calculate_sum - calculates the sum of two integers
+ * interactive - returns true if shell is in interactive mode
+ * @info: struct address
  *
- * @a: The first integer
- * @b: The second integer
- * Return: The sum of a and b
+ * Return: 1 if interactive mode, 0 otherwise
  */
-int calculate_sum(int a, int b)
+int interactive(info_t *info)
 {
-    int sum;
-
-    sum = a + b; /* Calculate the sum */
-
-    return (sum); /* Return the sum */
+	return (isatty(STDIN_FILENO) && info->readfd <= 2);
 }
 
 /**
- * main - Entry point
+ * is_delim - checks if character is a delimiter
+ * @c: the character to check
+ * @delim: the delimiter string
  *
- * Return: Always 0 (Success)
+ * Return: 1 if true, 0 if false
  */
-int main(void)
+int is_delim(char c, char *delim)
 {
-    int x = 5;
-    int y = 10;
-    int result;
+	while (*delim)
+	{
+		if (*delim++ == c)
+			return (1);
+	}
+	return (0);
+}
 
-    result = calculate_sum(x, y); /* Calculate the sum of x and y */
+/**
+ * _isalpha - checks for alphabetic character
+ * @c: The character to check
+ *
+ * Return: 1 if c is alphabetic, 0 otherwise
+ */
+int _isalpha(int c)
+{
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+		return (1);
+	else
+		return (0);
+}
 
-    printf("The sum of %d and %d is %d\n", x, y, result); /* Print the result */
+/**
+ * _atoi - converts a string to an integer
+ * @s: the string to be converted
+ *
+ * Return: 0 if no numbers in string, converted number otherwise
+ */
+int _atoi(char *s)
+{
+	int i, sign = 1, flag = 0, output;
+	unsigned int result = 0;
 
-    /* Execute a shell command to print the date */
-    system("date");
+	for (i = 0; s[i] != '\0' && flag != 2; i++)
+	{
+		if (s[i] == '-')
+			sign *= -1;
 
-    return (0);
+		if (s[i] >= '0' && s[i] <= '9')
+		{
+			flag = 1;
+			result *= 10;
+			result += (s[i] - '0');
+		}
+		else if (flag == 1)
+			flag = 2;
+	}
+
+	if (sign == -1)
+		output = -result;
+	else
+		output = result;
+
+	return (output);
 }
