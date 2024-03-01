@@ -28,7 +28,7 @@ void free_all_data(data_of_program *data)
 {
     if (data->file_descriptor != 0)
     {
-        if (close(data->file_descriptor))
+        if (close(data->file_descriptor) == -1)
             perror(data->program_name);
     }
     free_recurrent_data(data);
