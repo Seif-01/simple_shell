@@ -13,33 +13,33 @@ int _getline(data_of_program *data)
     static char array_operators[10] = {'\0'};
     ssize_t bytes_read, c = 0;
 
-    /* check if does not exist more commands in the array */
-    /* and checks the logical operators */
+    /* check if does not exist more commands in the array. */
+    /* and checks the logical operators. */
     if (!array_commands[0] || (array_operators[0] == '&' && errno != 0) ||
         (array_operators[0] == '|' && errno == 0))
     {
-        /* free the memory allocated in the array if it exists */
+        /* release the memory allocated in the array if it exists. */
         for (c = 0; array_commands[c]; c++)
         {
             free(array_commands[c]);
             array_commands[c] = NULL;
         }
 
-        /* read from the file descriptor int to buff */
+        /* read from the file descriptor int to buff. */
         bytes_read = read(data->file_descriptor, &buff, BUFFER_READ_SIZE);
         if (bytes_read == 0)
             return (-1);
 
-        /* split lines for \n or ; */
+        /* split the lines for \n or ; */
         c = 0;
         do {
             array_commands[c] = str_duplicate(_strtok(c ? NULL : buff, "\n;"));
-            /* checks and split for && and || operators */
+            /* checks and split for && and || operators. */
             c = check_logic_ops(array_commands, c, array_operators);
         } while (array_commands[c++]);
     }
 
-    /* obtains the next command (command 0) and remove it from the array */
+    /* obtains next command (command 0) and remove it from the array. */
     data->input_line = array_commands[0];
     for (c = 0; array_commands[c]; c++)
     {
